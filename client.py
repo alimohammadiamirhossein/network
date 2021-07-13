@@ -4,7 +4,7 @@ import time
 import random
 
 host = '127.0.0.1'
-manager_port = 31950
+manager_port = 3191
 ID = input("enter your ID: ")
 port = int(input("enter your port: "))
 
@@ -19,6 +19,7 @@ def connection(rec_data=None, port1=-1):
         try:
             client_socket.connect((host, port1))
             print("you connected to your manager")
+            client_socket.send(f"{ID}".encode("ascii"))
             receive_data(rec_data)
             break
         except Exception as e:
@@ -38,5 +39,5 @@ def receive_data(rec_data=None):
             return
 
 
-thread = threading.Thread(target=connection, args=(None,manager_port,))
+thread = threading.Thread(target=connection, args=(None, manager_port,))
 thread.start()

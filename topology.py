@@ -22,8 +22,8 @@ class Topology:
 
     def manager(self):
         host = '127.0.0.1'
-        manager_port = 3195
-        port = 3195
+        manager_port = 3191
+        port = 3191
 
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
