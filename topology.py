@@ -6,7 +6,7 @@ class Topology:
         self.height = 0
         self.nodes = []
         self.last_node_number = 0
-        self.manager = None
+        self.manager()
 
     def append(self, ID, port):
         if self.last_node_number + 1 < 2**self.height - 1:
@@ -18,8 +18,7 @@ class Topology:
         parent_index = self.last_node_number // 2
         if parent_index > 0:
             parent_node = self.nodes[parent_index]
-        # node = Node(id, ip, node) todo
-        self.nodes.append(node)
+        return parent_node
 
     def manager(self):
         host = '127.0.0.1'
@@ -31,3 +30,5 @@ class Topology:
         server_socket.bind((host, port))
         server_socket.listen()
 
+        cl1, add1 = server_socket.accept()
+        print(cl1, add1)
