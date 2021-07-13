@@ -4,23 +4,27 @@ import time
 import random
 from node import Node
 from packet import Packet
+from command_handler import CommandHandler
+
 
 class Client:
     def __init__(self):
         self.host = '127.0.0.1'
         self.manager_port = 3191
         self.node = Node()
-        self.node.ID = input("enter your ID: ")
-        self.node.port = int(input("enter your port: "))
+        self.commandHandler = CommandHandler(self)
 
+        thread1 = threading.Thread(target=self.command_handler, args=())
+        thread1.start()
+
+        while self.node.ID is None:
+            time.sleep(1)
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.bind((self.host, self.node.port))
         self.server_socket.listen()
 
         thread2 = threading.Thread(target=self.server_receive, args=())
         thread2.start()
-        self.connection(f"{self.node.ID} REQUESTS FOR CONNECTING TO NETWORK ON PORT {self.node.port}"
-                        , self.manager_port)
 
     def connection(self, send_data, port1):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -47,6 +51,10 @@ class Client:
                 packet1 = Packet()
                 packet1.fetch_massage(msg)
 
+    def command_handler(self):
+        while True:
+            cmd = input()
+            self.commandHandler.command_handler(cmd)
 
 if __name__ == '__main__':
     Client()
