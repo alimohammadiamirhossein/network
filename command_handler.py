@@ -19,7 +19,49 @@ class CommandHandler:
             time.sleep(1)
             self.advertise_parent()
         elif cmd == "SHOW KNOWN CLIENTS":
+            lsd1 = self.client.node.left_child_IDs_list
+            lsd2 = self.client.node.right_child_IDs_list
+            print(lsd1 + lsd2)
+        elif cmd.startswith("ROUTE"):
+            ID_b = cmd.split()[1]
+            pckt = Packet()
+            pckt.type = 10
+            pckt.source_ID = self.client.node.ID
+            pckt.destination_ID = ID_b
+            pckt.Data = f"ROUTE {ID_b} SOURCE {self.client.node.ID}"
+            msg1 = pckt.make_massage()
+            self.send_routing_message(msg1, True)
+
+    def send_routing_message(self, msg2, are_u_start=False):
+        packet2 = Packet()
+        packet2.fetch_massage(msg2)
+        data2 = packet2.Data.split()
+        ID2 = data2[1]
+        # print(ID2, self.client.node.left_child_IDs_list, self.client.node.right_child_IDs_list)
+        source2 = data2[3]
+        if self.send_message_known_id(ID2, msg2):
             pass
+        elif are_u_start:
+            print(f"DESTINATION {ID2} NOT FOUND")
+        else:
+            pckt = Packet()
+            pckt.type = 31
+            pckt.source_ID = self.client.node.ID
+            pckt.destination_ID = source2
+            pckt.Data = f"DESTINATION {ID2} NOT FOUND"
+            self.send_message_known_id(pckt.destination_ID, pckt.make_massage())
+
+    def send_message_known_id(self, ID2, msg2):
+        result = True
+        if ID2 in self.client.node.left_child_IDs_list:
+            self.client.connection(msg2, self.client.node.left_child_port)
+        elif ID2 in self.client.node.right_child_IDs_list:
+            self.client.connection(msg2, self.client.node.right_child_port)
+        elif self.client.node.parent_port != -1:
+            self.client.connection(msg2, self.client.node.parent_port)
+        else:
+            result = False
+        return result
 
     def advertise_parent(self):
         pckt = Packet()
@@ -37,7 +79,7 @@ class CommandHandler:
         pckt.type = 41
         pckt.source_ID = self.client.node.ID
         pckt.destination_ID = self.client.node.parent_ID
-        pckt.Data = self.client.node.parent_port
+        pckt.Data = self.client.node.port
         msg1 = pckt.make_massage()
         if pckt.destination_ID != -1:
             self.client.connection(msg1, self.client.node.parent_port)
