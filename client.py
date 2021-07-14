@@ -5,7 +5,7 @@ import random
 from node import Node
 from packet import Packet
 from command_handler import CommandHandler
-
+from massage_handler import MassageHandler
 
 class Client:
     def __init__(self):
@@ -13,6 +13,7 @@ class Client:
         self.manager_port = 3191
         self.node = Node()
         self.commandHandler = CommandHandler(self)
+        self.massageHandler = MassageHandler(self)
 
         thread1 = threading.Thread(target=self.command_handler, args=())
         thread1.start()
@@ -28,21 +29,25 @@ class Client:
 
     def connection(self, send_data, port1):
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        i = 1
         while True:
             try:
                 client_socket.connect((self.host, port1))
-                print("you connected to your manager")
+                print("you connected", send_data)
                 client_socket.send(send_data.encode("ascii"))
+                print("send to", port1)
                 client_socket.close()
                 break
             except Exception as e:
-                time.sleep(1)
+                time.sleep(i)
+                i *= 2
                 message = e
 
     def server_receive(self):
         while True:
             cl1, add1 = self.server_socket.accept()
             msg = cl1.recv(1024).decode("ascii")
+            print("acc new msg", msg)
             if self.node.parent_ID is None:
                 self.node.parent_ID = msg.split()[2]
                 self.node.parent_port = int(msg.split()[5])
@@ -50,6 +55,8 @@ class Client:
             else:
                 packet1 = Packet()
                 packet1.fetch_massage(msg)
+                thread3 = threading.Thread(target=self.massageHandler.massage_handler, args=(packet1, ))
+                thread3.start()
 
     def command_handler(self):
         while True:
@@ -58,3 +65,12 @@ class Client:
 
 if __name__ == '__main__':
     Client()
+
+'''
+CONNECT AS ali ON PORT 1
+CONNECT AS mohsen ON PORT 2
+CONNECT AS reza ON PORT 3
+CONNECT AS kia ON PORT 4
+CONNECT AS mamal ON PORT 5
+
+'''
