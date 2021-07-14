@@ -33,9 +33,9 @@ class Client:
         while True:
             try:
                 client_socket.connect((self.host, port1))
-                print("you connected", send_data)
+                # print("you connected", send_data)
                 client_socket.send(send_data.encode("ascii"))
-                print("send to", port1)
+                # print("send to", port1)
                 client_socket.close()
                 break
             except Exception as e:
@@ -47,7 +47,7 @@ class Client:
         while True:
             cl1, add1 = self.server_socket.accept()
             msg = cl1.recv(1024).decode("ascii")
-            print("acc new msg", msg)
+            # print("acc new msg", msg)
             if self.node.parent_ID is None:
                 self.node.parent_ID = msg.split()[2]
                 self.node.parent_port = int(msg.split()[5])
@@ -67,10 +67,9 @@ if __name__ == '__main__':
     Client()
 
 '''
-CONNECT AS ali ON PORT 1
-CONNECT AS mohsen ON PORT 2
-CONNECT AS reza ON PORT 3
-CONNECT AS kia ON PORT 4
-CONNECT AS mamal ON PORT 5
-
+CONNECT AS ali ON PORT 11
+CONNECT AS mohsen ON PORT 12
+CONNECT AS reza ON PORT 13
+CONNECT AS kia ON PORT 14
+CONNECT AS mamal ON PORT 15
 '''
