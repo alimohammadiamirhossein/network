@@ -1,5 +1,6 @@
 from packet import Packet
 import time
+from chat import Chat
 
 
 class CommandHandler:
@@ -11,8 +12,8 @@ class CommandHandler:
             self.client.node.ID = cmd.split()[2]
             self.client.node.port = int(cmd.split()[5])
             self.client.connection(
-                                f"{self.client.node.ID} REQUESTS FOR CONNECTING TO NETWORK ON PORT {self.client.node.port}",
-                                self.client.manager_port)
+                f"{self.client.node.ID} REQUESTS FOR CONNECTING TO NETWORK ON PORT {self.client.node.port}",
+                self.client.manager_port)
             while self.client.node.parent_port is None:
                 time.sleep(1)
             self.first_connection_with_parent()
@@ -31,6 +32,34 @@ class CommandHandler:
             pckt.Data = f"ROUTE {ID_b} SOURCE {self.client.node.ID}"
             msg1 = pckt.make_massage()
             self.send_routing_message(msg1, True)
+        # start chat part
+        elif cmd.startswith("START CHAT"):
+            # TODO : check splitting
+            x = cmd.split(" ")
+            client_chat_name = x[2]
+            self.client.node.chat_name = client_chat_name
+            self.client.node.inChat = True
+            temp = x[4]
+            chat_ids = temp.split(",")
+            chat = Chat(self.client, self.client.node.ID, chat_ids)
+            # TODO: start a thread for chat
+        elif cmd.startswith("REQUESTS FOR STARTING CHAT WITH"):
+            # wait until all requests are sent
+            time.sleep(1)
+            # self.client.node.chat.ask_to_join(self.client)
+            print(f"{self.client.node.chat.admin_client.node.chat_name} with id {self.client.node.chat.admin} has "
+                  f"asked you to join a chat. Would you like to join?[Y/N]")
+            answer = input()
+            self.client.node.chat.numOfDefined += 1
+            if answer == "Y":
+                print("Choose a name for yourself")
+                name = input()
+                self.client.chat.append_client(name, self.client)
+
+            else:
+                self.client.chat = None
+
+        # end chat part
 
     def send_routing_message(self, msg2, are_u_start=False):
         packet2 = Packet()
@@ -83,6 +112,3 @@ class CommandHandler:
         msg1 = pckt.make_massage()
         if pckt.destination_ID != -1:
             self.client.connection(msg1, self.client.node.parent_port)
-
-
-

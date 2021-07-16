@@ -10,3 +10,9 @@ class Node:
         self.right_child_port = None
         self.left_child_IDs_list = []
         self.right_child_IDs_list = []
+        # chat part
+        self.known_IDs = []
+        self.chat_name = None
+        self.inChat = False
+        self.chat = None
+        # chat part
