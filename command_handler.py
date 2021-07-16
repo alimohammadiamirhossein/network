@@ -1,6 +1,5 @@
 from packet import Packet
 import time
-from chat import Chat
 
 
 class CommandHandler:
@@ -121,3 +120,6 @@ class CommandHandler:
         msg1 = pckt.make_massage()
         if pckt.destination_ID != -1:
             self.client.connection(msg1, self.client.node.parent_port)
+
+
+
