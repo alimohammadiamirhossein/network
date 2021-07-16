@@ -7,14 +7,17 @@ from packet import Packet
 from command_handler import CommandHandler
 from massage_handler import MassageHandler
 
+
 class Client:
+    # TODO : add all clients here
+    all_clients = []
+
     def __init__(self):
         self.host = '127.0.0.1'
         self.manager_port = 3191
         self.node = Node()
         self.commandHandler = CommandHandler(self)
         self.massageHandler = MassageHandler(self)
-
         thread1 = threading.Thread(target=self.command_handler, args=())
         thread1.start()
 
@@ -55,13 +58,20 @@ class Client:
             else:
                 packet1 = Packet()
                 packet1.fetch_massage(msg)
-                thread3 = threading.Thread(target=self.massageHandler.massage_handler, args=(packet1, ))
+                thread3 = threading.Thread(target=self.massageHandler.massage_handler, args=(packet1,))
                 thread3.start()
 
     def command_handler(self):
         while True:
             cmd = input()
             self.commandHandler.command_handler(cmd)
+
+    def find_client_from_id(self, id):
+        for client in self.all_clients:
+            if client.node.ID == id:
+                return client
+        return -1
+
 
 if __name__ == '__main__':
     Client()
