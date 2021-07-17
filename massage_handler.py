@@ -1,4 +1,6 @@
 from packet import Packet
+
+
 class MassageHandler:
     def __init__(self, client):
         self.client = client

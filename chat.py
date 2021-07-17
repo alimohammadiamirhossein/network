@@ -1,5 +1,3 @@
-from client import Client
-
 class Chat:
     def __init__(self, admin_client, admin, IDs):
         self.numOfDefined = 0
