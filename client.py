@@ -10,6 +10,9 @@ from firewall import FirewallManager
 
 
 class Client:
+    # TODO : add all clients here
+    all_clients = []
+
     def __init__(self):
         self.host = '127.0.0.1'
         self.manager_port = 3191
@@ -70,6 +73,13 @@ class Client:
         while True:
             cmd = input()
             self.commandHandler.command_handler(cmd)
+
+    def find_client_from_id(self, id):
+        for client in self.all_clients:
+            if client.node.ID == id:
+                return client
+        return -1
+
 
 if __name__ == '__main__':
     Client()
