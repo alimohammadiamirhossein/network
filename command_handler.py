@@ -42,7 +42,24 @@ class CommandHandler:
             temp = x[4]
             chat_ids = temp.split(",")
             chat = Chat(self.client, self.client.node.ID, chat_ids)
-            self.client.node.chat = chat
+            # TODO: start a thread for chat
+        elif cmd.startswith("REQUESTS FOR STARTING CHAT WITH"):
+            # wait until all requests are sent
+            time.sleep(1)
+            # self.client.node.chat.ask_to_join(self.client)
+            print(f"{self.client.node.chat.admin_client.node.chat_name} with id {self.client.node.chat.admin} has "
+                  f"asked you to join a chat. Would you like to join?[Y/N]")
+            answer = input()
+            self.client.node.chat.numOfDefined += 1
+            if answer == "Y":
+                print("Choose a name for yourself")
+                name = input()
+                self.client.chat.append_client(name, self.client)
+
+            else:
+                self.client.chat = None
+
+        # end chat part
 
     def send_routing_message(self, msg2, are_u_start=False):
         packet2 = Packet()
