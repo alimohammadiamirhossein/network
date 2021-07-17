@@ -1,3 +1,4 @@
+from packet import Packet
 class MassageHandler:
     def __init__(self, client):
         self.client = client
@@ -35,6 +36,9 @@ class MassageHandler:
             ID2 = packet.Data.split()[1]
             if self.client.node.ID == ID2:
                 print("packet find from", packet.source_ID) #todo packet type 11
+                packet11 = Packet()
+                packet11.source_ID = self.client.node.ID
+
             else:
                 # print("time to send", packet.make_massage())
                 self.client.commandHandler.send_routing_message(packet.make_massage(), False)
