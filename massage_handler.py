@@ -39,11 +39,35 @@ class MassageHandler:
             if self.client.node.ID == ID2:
                 print("packet find from", packet.source_ID) #todo packet type 11
                 packet11 = Packet()
+                packet11.type = 11
                 packet11.source_ID = self.client.node.ID
-
+                packet11.destination_ID = packet.source_ID
+                packet11.Data = f"{self.client.node.ID}"
+                self.client.commandHandler.send_message_known_id(packet.source_ID, packet11.make_massage())
             else:
                 # print("time to send", packet.make_massage())
                 self.client.commandHandler.send_routing_message(packet.make_massage(), False)
+
+        elif packet.type == 11:
+            last_node_ID = packet.source_ID
+            if last_node_ID == self.client.node.parent_ID:
+                data1 = self.client.node.ID + " <- " + packet.Data
+                packet.Data = data1
+            elif last_node_ID == self.client.node.right_child_ID:
+                data1 = self.client.node.ID + " -> " + packet.Data
+                packet.Data = data1
+            elif last_node_ID == self.client.node.left_child_ID:
+                data1 = self.client.node.ID + " -> " + packet.Data
+                packet.Data = data1
+            else:
+                data1 = self.client.node.ID + " something wrong " + packet.Data
+                packet.Data = data1
+
+            if packet.destination_ID == self.client.node.ID:
+                print(packet.Data)
+            else:
+                packet.source_ID = self.client.node.ID
+                self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())
 
         elif packet.type == 31:
             # print(31, packet.destination_ID, packet.Data)
