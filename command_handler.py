@@ -41,25 +41,51 @@ class CommandHandler:
             self.client.node.inChat = True
             temp = x[4]
             chat_ids = temp.split(",")
-            chat = Chat(self.client, self.client.node.ID, chat_ids)
-            # TODO: start a thread for chat
-        elif cmd.startswith("REQUESTS FOR STARTING CHAT WITH"):
-            # wait until all requests are sent
-            time.sleep(1)
-            # self.client.node.chat.ask_to_join(self.client)
-            print(f"{self.client.node.chat.admin_client.node.chat_name} with id {self.client.node.chat.admin} has "
-                  f"asked you to join a chat. Would you like to join?[Y/N]")
-            answer = input()
-            self.client.node.chat.numOfDefined += 1
-            if answer == "Y":
+            second_IDs = []
+            for ID in chat_ids:
+                if ID in self.client.node.known_IDs:
+                    # TODO : handle printing ID's
+                    # TODO : handle send_message_known id have to make packet
+                    second_IDs.append(ID)
+                    self.client.commandHandler.send_message_known_id(ID,
+                                                                     f"REQUESTS FOR STARTING CHAT WITH {self.admin_client.node.chat_name} : {self.admin}, ID1, ID2, ID3")
+            self.client.node.inChat = True
+            self.client.node.chat_name = client_chat_name
+            # chat = Chat(self.client, self.client.node.ID, chat_ids)
+            # self.client.node.chat = chat
+        elif cmd == "EXIT CHAT":
+            for ID in self.client.node.chat_members:
+                pass
+
+    def chat_handler(self, cmd):
+        if self.client.node.join_to_chat_answer:
+            if cmd == "Y":
+                self.client.node.chat_members.append([self.client.node.admin_ID, self.client.node.admin_name])
                 print("Choose a name for yourself")
-                name = input()
-                self.client.chat.append_client(name, self.client)
-
+                self.client.node.join_to_chat_answer = False
+                self.client.node.chat_name_answer = True
+        elif self.client.node.chat_name_answer:
+            name = cmd
+            self.client.node.inChat = True
+            self.client.node.chat_name = name
+            for ID in self.client.node.all_chat_IDs:
+                if ID != self.client.node.ID:
+                    # TODO: handle send_message_known
+                    self.client.commandHandler.send_message_known_id(ID, f"{self.client.node.ID} : {name}")
+            self.client.node.chat_name_answer = False
+        elif self.client.node.inChat:
+            if cmd == "EXIT CHAT":
+                for ID in self.client.node.all_chat_IDs:
+                    # TODO: handle send_message_known
+                    self.client.commandHandler.send_message_known_id(ID, f"EXIT CHAT {self.client.node.ID}")
+                self.client.node.inChat = False
             else:
-                self.client.chat = None
+                self.send_chat_message_to_all(cmd)
 
-        # end chat part
+    def send_chat_message_to_all(self, msg):
+        for x in self.client.node.chat_members:
+            ID = x[0]
+            self.client.commandHandler.send_message_known_id(ID, f"{msg}")
 
     def send_routing_message(self, msg2, are_u_start=False):
         packet2 = Packet()

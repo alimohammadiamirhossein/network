@@ -1,5 +1,5 @@
 from packet import Packet
-
+import time
 
 class MassageHandler:
     def __init__(self, client):
@@ -75,3 +75,37 @@ class MassageHandler:
                 print(packet.Data)
             else:
                 self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())
+        elif packet.type == 0:
+            data = packet.Data
+            if data.startswith("REQUESTS FOR STARTING CHAT WITH"):
+                temp = data.split(" ")
+                self.client.node.admin_name = temp[5]
+                self.client.node.admin_ID = temp[7]
+                self.client.node.all_chat_IDs = temp[7:]
+                # wait until all requests are sent
+                time.sleep(1)
+                print(f"{self.client.node.admin_name} with id {self.client.node.admin_ID} has "
+                      f"asked you to join a chat. Would you like to join?[Y/N]")
+                self.client.node.join_to_chat_answer = True
+            elif data.startswith("EXIT CHAT"):
+                if self.client.node.inChat:
+                    temp = data.split(" ")
+                    left_chat_id = temp[2]
+                    for x in self.client.node.chat_members:
+                        if x[0] == left_chat_id:
+                            left_chat_name = x[1]
+                            self.client.node.chat_members.remove(x)
+                            break
+                    print(f"{left_chat_name}({left_chat_id}) left the chat.")
+            else:
+                temp = data.split(" ")
+                if temp[1] == ":" and len(temp) == 3:
+                    if self.client.node.inChat:
+                        member_chat_name = temp[2]
+                        member_id = temp[0]
+                        self.client.node.chat_members.append([member_id ,member_chat_name])
+                        print(f"{member_chat_name}({member_id}) was joined to the chat.")
+                else:
+                    # the data is a message from another user
+                    print(data)
+

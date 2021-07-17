@@ -64,7 +64,10 @@ class Client:
     def command_handler(self):
         while True:
             cmd = input()
-            self.commandHandler.command_handler(cmd)
+            if self.node.join_to_chat_answer or self.node.chat_name_answer or self.node.inChat:
+                self.commandHandler.chat_handler(cmd)
+            else:
+                self.commandHandler.command_handler(cmd)
 
     def find_client_from_id(self, id):
         for client in self.all_clients:
