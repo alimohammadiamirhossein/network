@@ -49,7 +49,7 @@ class MassageHandler:
                 self.client.commandHandler.send_routing_message(packet.make_massage(), False)
 
         elif packet.type == 11:
-            last_node_ID = packet.source_ID
+            last_node_ID = packet.Data.split()[0]
             if last_node_ID == self.client.node.parent_ID:
                 data1 = self.client.node.ID + " <- " + packet.Data
                 packet.Data = data1
@@ -66,7 +66,6 @@ class MassageHandler:
             if packet.destination_ID == self.client.node.ID:
                 print(packet.Data)
             else:
-                packet.source_ID = self.client.node.ID
                 self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())
 
         elif packet.type == 31:

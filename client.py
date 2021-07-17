@@ -6,6 +6,7 @@ from node import Node
 from packet import Packet
 from command_handler import CommandHandler
 from massage_handler import MassageHandler
+from firewall import FirewallManager
 
 
 class Client:
@@ -18,6 +19,7 @@ class Client:
         self.node = Node()
         self.commandHandler = CommandHandler(self)
         self.massageHandler = MassageHandler(self)
+        self.firewall_manager = FirewallManager()
         thread1 = threading.Thread(target=self.command_handler, args=())
         thread1.start()
 
@@ -31,6 +33,9 @@ class Client:
         thread2.start()
 
     def connection(self, send_data, port1):
+        if "$" in send_data:
+            if not self.firewall_manager.can_packet_pass(Packet().fetch_massage(send_data)):
+                return
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         i = 1
         while True:

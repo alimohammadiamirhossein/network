@@ -58,8 +58,13 @@ class CommandHandler:
 
             else:
                 self.client.chat = None
-
         # end chat part
+
+        elif cmd.startswith("FILTER"):
+        #sample FILTER Direction IDSource IDDestination Type Action
+            x = cmd.split()
+            type = int(x[4])
+            self.client.firewall_manager.append_fireWall(x[1], x[2], x[3], type, x[5])
 
     def send_routing_message(self, msg2, are_u_start=False):
         packet2 = Packet()
