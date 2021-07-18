@@ -14,5 +14,10 @@ class Node:
         self.known_IDs = []
         self.chat_name = None
         self.inChat = False
-        self.chat = None
+        self.chat_members = []
+        self.join_to_chat_answer = False
+        self.chat_name_answer = False
+        self.admin_ID = None
+        self.admin_name = None
+        self.all_chat_IDs = None
         # chat part

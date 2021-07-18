@@ -11,11 +11,12 @@ class Chat:
     def send_request_to_IDs(self):
         for ID in self.first_IDs:
             if ID in self.admin_client.node.known_IDs:
-                client = Client.find_client_from_id(ID)
-                client.node.chat = self
+                # client = Client.find_client_from_id(ID)
+                # client.node.chat = self
                 # TODO : handle printing ID's
                 self.second_IDs.append(ID)
-                self.admin_client.commandHandler.send_message_known_id(ID, f"REQUESTS FOR STARTING CHAT WITH {self.admin_client.node.chat_name} : {self.admin}, ID1, ID2, ID3")
+                self.admin_client.commandHandler.send_message_known_id(ID,
+                                                                       f"REQUESTS FOR STARTING CHAT WITH {self.admin_client.node.chat_name} : {self.admin}, ID1, ID2, ID3")
             else:
                 pass
 
@@ -27,12 +28,3 @@ class Chat:
         for ID in self.second_IDs:
             if ID != client.node.ID:
                 client.commandHandler.send_message_known_id(ID, f"{client.node.ID} : {client.node.chat_name}")
-
-
-
-
-
-
-
-
-
