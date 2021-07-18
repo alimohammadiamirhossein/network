@@ -33,9 +33,11 @@ class Client:
         thread2.start()
 
     def connection(self, send_data, port1):
-        if "$" in send_data:
-            if not self.firewall_manager.can_packet_pass(Packet().fetch_massage(send_data)):
-                return
+        # if "$" in send_data:
+        #     p_tmp = Packet()
+        #     p_tmp.fetch_massage(send_data)
+        #     if not self.firewall_manager.can_packet_pass(p_tmp):
+        #         return
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         i = 1
         while True:
@@ -63,8 +65,9 @@ class Client:
             else:
                 packet1 = Packet()
                 packet1.fetch_massage(msg)
-                thread3 = threading.Thread(target=self.massageHandler.massage_handler, args=(packet1,))
-                thread3.start()
+                if self.firewall_manager.can_packet_pass(packet1):
+                    thread3 = threading.Thread(target=self.massageHandler.massage_handler, args=(packet1,))
+                    thread3.start()
 
     def command_handler(self):
         while True:
@@ -88,4 +91,6 @@ CONNECT AS reza ON PORT 13
 CONNECT AS kia ON PORT 14
 CONNECT AS mamal ON PORT 15
 CONNECT AS tar ON PORT 16
+
+FILTER INPUT kia ali 11 DROP
 '''

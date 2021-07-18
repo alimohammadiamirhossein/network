@@ -64,6 +64,10 @@ class CommandHandler:
         #sample FILTER Direction IDSource IDDestination Type Action
             x = cmd.split()
             type = int(x[4])
+            if x[5] == "DROP":
+                x[5] = False
+            else:
+                x[5] = True
             self.client.firewall_manager.append_fireWall(x[1], x[2], x[3], type, x[5])
 
     def send_routing_message(self, msg2, are_u_start=False):
