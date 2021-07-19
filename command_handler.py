@@ -55,13 +55,15 @@ class CommandHandler:
                 packet.destination_ID = ID
                 # TODO : all IDs in chat_ID
                 packet.Data = f"REQUESTS FOR STARTING CHAT WITH {client_chat_name} : {self.client.node.ID},ID1,ID2,ID3"
-                # TODO : handle send_message_known id have to make packet
                 message = packet.make_massage()
                 self.client.commandHandler.send_message_known_id(ID, message)
 
         elif cmd.startswith("Salam Salam Sad Ta Salam"):
             x = cmd.split(" ")
             destination_id = x[5]
+            if destination_id == -1:
+                # TODO : send message to all
+                pass
             if destination_id in self.client.node.known_IDs:
                 packet = Packet()
                 packet.type = 0
@@ -94,8 +96,7 @@ class CommandHandler:
                     packet.source_ID = self.client.node.ID
                     # TODO: handle send_message_known
                     message = packet.make_massage()
-
-                self.client.commandHandler.send_message_known_id(ID, message )
+                    self.client.commandHandler.send_message_known_id(ID, message)
             self.client.node.chat_name_answer = False
         elif self.client.node.inChat:
             if cmd == "EXIT CHAT":
