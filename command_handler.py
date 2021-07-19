@@ -33,41 +33,58 @@ class CommandHandler:
             self.send_routing_message(msg1, True)
         # start chat part
         elif cmd.startswith("START CHAT"):
-            # TODO : check splitting
             x = cmd.split(" ")
             client_chat_name = x[2]
             self.client.node.chat_name = client_chat_name
             self.client.node.inChat = True
             temp = x[4]
             chat_ids = temp.split(",")
-            chat = Chat(self.client, self.client.node.ID, chat_ids)
-            # TODO: start a thread for chat
-        elif cmd.startswith("REQUESTS FOR STARTING CHAT WITH"):
-            # wait until all requests are sent
-            time.sleep(1)
-            # self.client.node.chat.ask_to_join(self.client)
-            print(f"{self.client.node.chat.admin_client.node.chat_name} with id {self.client.node.chat.admin} has "
-                  f"asked you to join a chat. Would you like to join?[Y/N]")
-            answer = input()
-            self.client.node.chat.numOfDefined += 1
-            if answer == "Y":
+            for ID in chat_ids:
+                if ID not in self.client.node.known_IDs:
+                    chat_ids.remove(ID)
+            for ID in chat_ids:
+                # TODO : handle printing ID's
+                # TODO : handle send_message_known id have to make packet
+                self.client.commandHandler.send_message_known_id(ID,                                                                        # TODO : all IDs in chat_ID
+                                                                 f"REQUESTS FOR STARTING CHAT WITH {client_chat_name} : {self.client.node.ID},ID1,ID2,ID3")
+
+
+
+    def chat_handler(self, cmd):
+        if self.client.node.join_to_chat_answer:
+            if cmd == "Y":
+                self.client.node.chat_members.append([self.client.node.admin_ID, self.client.node.admin_name])
                 print("Choose a name for yourself")
-                name = input()
-                self.client.chat.append_client(name, self.client)
-
+                self.client.node.join_to_chat_answer = False
+                self.client.node.chat_name_answer = True
             else:
-                self.client.chat = None
-        # end chat part
-
-        elif cmd.startswith("FILTER"):
-        #sample FILTER Direction IDSource IDDestination Type Action
-            x = cmd.split()
-            type = int(x[4])
-            if x[5] == "DROP":
-                x[5] = False
+                self.client.node.inChat = False
+                self.client.node.chat_members = []
+                self.client.node.all_chat_IDs = []
+        elif self.client.node.chat_name_answer:
+            name = cmd
+            self.client.node.chat_name = name
+            for ID in self.client.node.all_chat_IDs:
+                if ID != self.client.node.ID:
+                    # TODO: handle send_message_known
+                    self.client.commandHandler.send_message_known_id(ID, f"CHAT :\n{self.client.node.ID} : {name}")
+            self.client.node.chat_name_answer = False
+        elif self.client.node.inChat:
+            if cmd == "EXIT CHAT":
+                for ID in self.client.node.all_chat_IDs:
+                    # TODO: handle send_message_known
+                    self.client.commandHandler.send_message_known_id(ID, f"EXIT CHAT {self.client.node.ID}")
+                self.client.node.inChat = False
+                self.client.node.chat_members = []
+                self.client.node.all_chat_IDs = []
             else:
-                x[5] = True
-            self.client.firewall_manager.append_fireWall(x[1], x[2], x[3], type, x[5])
+                self.send_chat_message_to_all(cmd)
+
+    def send_chat_message_to_all(self, msg):
+        for x in self.client.node.chat_members:
+            ID = x[0]
+            chat_name = x[1]
+            self.client.commandHandler.send_message_known_id(ID, f"{chat_name} : {msg}")
 
     def send_routing_message(self, msg2, are_u_start=False):
         packet2 = Packet()
@@ -120,6 +137,3 @@ class CommandHandler:
         msg1 = pckt.make_massage()
         if pckt.destination_ID != -1:
             self.client.connection(msg1, self.client.node.parent_port)
-
-
-
