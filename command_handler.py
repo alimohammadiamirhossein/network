@@ -41,6 +41,7 @@ class CommandHandler:
             pckt.destination_ID = ID_a
             pckt.Data = f"{ID_a}"
             msg1 = pckt.make_massage()
+            print("yops")
             if ID_a in self.known_ID():
                 self.send_message_known_id(ID_a, msg1)
 

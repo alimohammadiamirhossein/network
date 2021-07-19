@@ -9,9 +9,10 @@ class MassageHandler:
         self.client = client
 
     def massage_handler(self, packet):
-        if packet.source_ID not in self.client.node.known_IDs:
-            self.client.node.known_IDs.append(packet.source_ID)
-        if packet.destination_ID != self.client.node.ID:
+        if packet.destination_ID == self.client.node.ID:
+            if packet.source_ID not in self.client.node.known_IDs:
+                self.client.node.known_IDs.append(packet.source_ID)
+        else:
             if not self.client.node.inChat:
                 print(f"{packet.type} Packet from {packet.source_ID} to {packet.destination_ID}")
         # print(packet.source_ID, packet.Data)
@@ -19,10 +20,12 @@ class MassageHandler:
             if packet.source_ID == self.client.node.left_child_ID:
                 if packet.Data not in self.client.node.left_child_IDs_list:
                     self.client.node.left_child_IDs_list.append(packet.Data)
+                    self.client.node.known_IDs.append(packet.Data)
                     # print("left_child", self.client.node.left_child_IDs_list)
             elif packet.source_ID == self.client.node.right_child_ID:
                 if packet.Data not in self.client.node.right_child_IDs_list:
                     self.client.node.right_child_IDs_list.append(packet.Data)
+                    self.client.node.known_IDs.append(packet.Data)
                     # print("right_child", self.client.node.right_child_IDs_list)
             packet.source_ID = self.client.node.ID
             packet.destination_ID = self.client.node.parent_ID
@@ -41,12 +44,12 @@ class MassageHandler:
                 self.client.node.right_child_port = int(packet.Data)
                 # self.client.node.right_child_IDs_list.append(self.client.node.right_child_ID)
 
-        # elif packet.type == 21:
+        elif packet.type == 21:
             # print(21, packet.make_massage())
-            # if self.client.node.ID == packet.destination_ID:
-            #     if self
-            # else:
-            #     self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())
+            if self.client.node.ID == packet.destination_ID:
+                pass
+            else:
+                self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())
 
         elif packet.type == 10:
             # sample :     ROUTE {ID_b} SOURCE {self.client.node.ID}
@@ -80,6 +83,7 @@ class MassageHandler:
 
             if packet.destination_ID == self.client.node.ID:
                 print(packet.Data)
+                print("ap", self.client.node.known_IDs)
             else:
                 self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())
 
