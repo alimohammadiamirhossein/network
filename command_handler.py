@@ -40,9 +40,14 @@ class CommandHandler:
             self.client.node.inChat = True
             temp = x[4]
             chat_ids = temp.split(",")
+            remove_IDs = []
+            print(self.client.node.known_IDs)
             for ID in chat_ids:
                 if ID not in self.client.node.known_IDs:
-                    chat_ids.remove(ID)
+                    remove_IDs.append(ID)
+            for ID in remove_IDs:
+                self.client.node.known_IDs.remove(ID)
+            print(chat_ids)
             for ID in chat_ids:
                 packet = Packet()
                 packet.type = 0
@@ -55,16 +60,16 @@ class CommandHandler:
                 self.client.commandHandler.send_message_known_id(ID, message)
 
         elif cmd.startswith("Salam Salam Sad Ta Salam"):
-            print("alo")
             x = cmd.split(" ")
             destination_id = x[5]
-            packet = Packet()
-            packet.type = 0
-            packet.Data = "Salam Salam Sad Ta Salam"
-            packet.destination_ID = destination_id
-            packet.source_ID = self.client.node.ID
-            message = packet.make_massage()
-            self.send_message_known_id(destination_id,message)
+            if destination_id in self.client.node.known_IDs:
+                packet = Packet()
+                packet.type = 0
+                packet.Data = "Salam Salam Sad Ta Salam"
+                packet.destination_ID = destination_id
+                packet.source_ID = self.client.node.ID
+                message = packet.make_massage()
+                self.send_message_known_id(destination_id,message)
 
     def chat_handler(self, cmd):
         if self.client.node.join_to_chat_answer:

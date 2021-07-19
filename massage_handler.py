@@ -89,17 +89,23 @@ class MassageHandler:
                     packet2.source_ID = self.client.node.ID
                     packet2.type = 0
                     packet2.destination_ID = packet.source_ID
+                    if packet.source_ID not in self.client.node.known_IDs:
+                        self.client.node.known_IDs.append(packet.source_ID)
                     self.client.commandHandler.send_message_known_id(packet2.destination_ID,packet2.make_massage())
-                    self.client.node.known_IDs.append(packet.source_ID)
-                if data == "Hezaro Sisad Ta Salam":
-                    self.client.node.known_IDs.append(packet.source_ID)
+                elif data == "Hezaro Sisad Ta Salam":
+                    # self.client.node.known_IDs.append(packet.source_ID)
                     print("Hezaro Sisad Ta Salam")
-                if data.startswith("REQUESTS FOR STARTING CHAT WITH"):
+                elif data.startswith("REQUESTS FOR STARTING CHAT WITH"):
                     self.client.node.inChat = True
                     temp = data.split(" ")
                     self.client.node.admin_name = temp[5]
                     x = temp[7]
                     x = x.split(",")
+                    # handle known ID's here
+                    for ID in x:
+                        if ID not in self.client.node.known_IDs:
+                            self.client.node.known_IDs.append(ID)
+                    ###
                     self.client.node.admin_ID = x[0]
                     self.client.node.all_chat_IDs = x
                     # wait until all requests are sent
@@ -118,6 +124,7 @@ class MassageHandler:
                                 break
                         print(f"{left_chat_name}({left_chat_id}) left the chat.")
                 else:
+                    print(data)
                     temp = data.split(" ")
                     if temp[1] == ":" and len(temp) == 3:
                         member_chat_name = temp[2]
