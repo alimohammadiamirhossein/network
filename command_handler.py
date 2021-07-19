@@ -27,7 +27,8 @@ class CommandHandler:
             for a in self.client.node.left_child_IDs_list:
                 if a not in result1:
                     result1.append(a)
-            print(result1)
+            return result1
+
         elif cmd.startswith("ROUTE"):
             ID_b = cmd.split()[1]
             pckt = Packet()

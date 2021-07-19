@@ -8,7 +8,7 @@ class FireWall:
 
     @staticmethod
     def firewall_check(packet, fw):
-        print(12, packet, fw, packet.type, fw.type, fw.direction, packet.source_ID,fw.source_ID, packet.destination_ID, fw.dest_ID, fw.is_acc)
+        # print(12, packet, fw, packet.type, fw.type, fw.direction, packet.source_ID,fw.source_ID, packet.destination_ID, fw.dest_ID, fw.is_acc)
         if packet.type != fw.type:
             return True
         if fw.direction == "INPUT":
@@ -37,7 +37,7 @@ class FirewallManager:
         self.firewalls.append(fw)
 
     def can_packet_pass(self, packet):
-        print(len(self.firewalls))
+        # print(len(self.firewalls))
         result = True
         for fw in self.firewalls:
             tmp = FireWall.firewall_check(packet, fw)
