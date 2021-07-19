@@ -64,14 +64,14 @@ class CommandHandler:
             if destination_id == -1:
                 # TODO : send message to all
                 pass
-            if destination_id in self.client.node.known_IDs:
-                packet = Packet()
-                packet.type = 0
-                packet.Data = "Salam Salam Sad Ta Salam"
-                packet.destination_ID = destination_id
-                packet.source_ID = self.client.node.ID
-                message = packet.make_massage()
-                self.send_message_known_id(destination_id,message)
+            # if destination_id in self.client.node.known_IDs:
+            packet = Packet()
+            packet.type = 0
+            packet.Data = "Salam Salam Sad Ta Salam"
+            packet.destination_ID = destination_id
+            packet.source_ID = self.client.node.ID
+            message = packet.make_massage()
+            self.send_message_known_id(destination_id,message)
 
     def chat_handler(self, cmd):
         if self.client.node.join_to_chat_answer:

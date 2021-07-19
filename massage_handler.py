@@ -9,6 +9,8 @@ class MassageHandler:
         self.client = client
 
     def massage_handler(self, packet):
+        if packet.source_ID not in self.client.node.known_IDs:
+            self.client.node.known_IDs.append(packet.source_ID)
         # print(packet.source_ID, packet.Data)
         if packet.type == 20:
             if packet.source_ID == self.client.node.left_child_ID:
@@ -85,7 +87,7 @@ class MassageHandler:
                 if data.startswith("Salam Salam Sad Ta Salam"):
                     print("Salam Salam Sad Ta Salam")
                     packet2 = Packet()
-                    packet2.data = "Hezaro Sisad Ta Salam"
+                    packet2.Data = "Hezaro Sisad Ta Salam"
                     packet2.source_ID = self.client.node.ID
                     packet2.type = 0
                     packet2.destination_ID = packet.source_ID
