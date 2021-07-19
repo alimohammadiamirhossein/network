@@ -11,6 +11,9 @@ class MassageHandler:
     def massage_handler(self, packet):
         if packet.source_ID not in self.client.node.known_IDs:
             self.client.node.known_IDs.append(packet.source_ID)
+        if packet.destination_ID != self.client.node.ID:
+            if not self.client.node.inChat:
+                print(f"{packet.type} Packet from {packet.source_ID} to {packet.destination_ID}")
         # print(packet.source_ID, packet.Data)
         if packet.type == 20:
             if packet.source_ID == self.client.node.left_child_ID:
