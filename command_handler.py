@@ -15,9 +15,10 @@ class CommandHandler:
                 self.client.manager_port)
             while self.client.node.parent_port is None:
                 time.sleep(1)
-            self.first_connection_with_parent()
-            time.sleep(1)
-            self.advertise_parent()
+            if self.client.node.parent_port != -1:
+                self.first_connection_with_parent()
+                time.sleep(1)
+                self.advertise_parent()
         elif cmd == "SHOW KNOWN CLIENTS":
             lsd1 = self.client.node.left_child_IDs_list
             lsd2 = self.client.node.right_child_IDs_list
