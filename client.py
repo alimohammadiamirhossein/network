@@ -88,9 +88,10 @@ if __name__ == '__main__':
     Client()
 
 '''
-CONNECT AS ali ON PORT 1
-CONNECT AS mohsen ON PORT 2
-CONNECT AS kia ON PORT 4
+CONNECT AS ali ON PORT 11
+CONNECT AS mohsen ON PORT 12
+CONNECT AS reza ON PORT 13
+CONNECT AS kia ON PORT 14
 CONNECT AS mamal ON PORT 5
 CONNECT AS tar ON PORT 6
 
@@ -101,5 +102,5 @@ FILTER INPUT reza ali 11 DROP
 FILTER OUTPUT sa reza 10 DROP
 FILTER OUTPUT sa * 10 DROP
 
-Salam Salam Sad Ta Salam mohsen
+Salam Salam Sad Ta Salam -1
 '''

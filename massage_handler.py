@@ -81,9 +81,7 @@ class MassageHandler:
                 self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())
         elif packet.type == 0:
             data = packet.Data
-            if packet.destination_ID != self.client.node.ID:
-                self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())
-            else:
+            if packet.destination_ID == self.client.node.ID or packet.destination_ID == "-1":
                 if data.startswith("Salam Salam Sad Ta Salam"):
                     print("Salam Salam Sad Ta Salam")
                     packet2 = Packet()
@@ -137,3 +135,8 @@ class MassageHandler:
                             print(f"{member_chat_name}({member_id}) was joined to the chat.")
                     else:
                         print(data)
+
+            else:
+                self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())
+            if packet.destination_ID == "-1":
+                self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())
