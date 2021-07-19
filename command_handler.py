@@ -148,6 +148,14 @@ class CommandHandler:
             self.send_message_known_id(pckt.destination_ID, pckt.make_massage())
 
     def send_message_known_id(self, ID2, msg2):
+        if ID2 == "-1":
+            if self.client.node.left_child_port is not None:
+                self.client.connection(msg2, self.client.node.left_child_port)
+            if self.client.node.right_child_port is not None:
+                self.client.connection(msg2, self.client.node.right_child_port)
+            if self.client.node.parent_port != -1:
+                self.client.connection(msg2, self.client.node.parent_port)
+            return
         result = True
         if ID2 in self.client.node.left_child_IDs_list:
             self.client.connection(msg2, self.client.node.left_child_port)
