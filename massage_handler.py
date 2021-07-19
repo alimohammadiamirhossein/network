@@ -105,6 +105,7 @@ class MassageHandler:
                     if packet.source_ID not in self.client.node.known_IDs:
                         self.client.node.known_IDs.append(packet.source_ID)
                     self.client.commandHandler.send_message_known_id(packet2.destination_ID,packet2.make_massage())
+                    print(self.client.node.known_IDs)
                 elif data == "Hezaro Sisad Ta Salam":
                     # self.client.node.known_IDs.append(packet.source_ID)
                     print("Hezaro Sisad Ta Salam")
