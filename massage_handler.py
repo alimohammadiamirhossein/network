@@ -110,7 +110,6 @@ class MassageHandler:
                     ###
                     self.client.node.admin_ID = x[0]
                     self.client.node.all_chat_IDs = x
-                    # wait until all requests are sent
                     print(f"{self.client.node.admin_name} with id {self.client.node.admin_ID} has "
                           f"asked you to join a chat. Would you like to join?[Y/N]")
                     self.client.node.join_to_chat_answer = True
@@ -126,7 +125,6 @@ class MassageHandler:
                                 break
                         print(f"{left_chat_name}({left_chat_id}) left the chat.")
                 else:
-                    print(data)
                     temp = data.split(" ")
                     if temp[1] == ":" and len(temp) == 3:
                         member_chat_name = temp[2]
@@ -138,5 +136,4 @@ class MassageHandler:
                         else:
                             print(f"{member_chat_name}({member_id}) was joined to the chat.")
                     else:
-                        # the data is a message from another user
                         print(data)

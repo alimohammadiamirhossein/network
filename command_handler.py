@@ -46,15 +46,18 @@ class CommandHandler:
                 if ID not in self.client.node.known_IDs:
                     remove_IDs.append(ID)
             for ID in remove_IDs:
-                self.client.node.known_IDs.remove(ID)
+                chat_ids.remove(ID)
             print(chat_ids)
+            string = ''
+            for ID in chat_ids:
+                string += f",{ID}"
             for ID in chat_ids:
                 packet = Packet()
                 packet.type = 0
                 packet.source_ID = self.client.node.ID
                 packet.destination_ID = ID
                 # TODO : all IDs in chat_ID
-                packet.Data = f"REQUESTS FOR STARTING CHAT WITH {client_chat_name} : {self.client.node.ID},ID1,ID2,ID3"
+                packet.Data = f"REQUESTS FOR STARTING CHAT WITH {client_chat_name} : {self.client.node.ID}{string}"
                 message = packet.make_massage()
                 self.client.commandHandler.send_message_known_id(ID, message)
 
@@ -91,11 +94,13 @@ class CommandHandler:
                 if ID != self.client.node.ID:
                     packet = Packet()
                     packet.type = 0
-                    packet.Data = f"CHAT :\n{self.client.node.ID} : {name}"
+                    packet.Data = f"{self.client.node.ID} : {name}"
                     packet.destination_ID = ID
                     packet.source_ID = self.client.node.ID
                     # TODO: handle send_message_known
                     message = packet.make_massage()
+                    # print(self.client.node.all_chat_IDs)
+                    # print(message)
                     self.client.commandHandler.send_message_known_id(ID, message)
             self.client.node.chat_name_answer = False
         elif self.client.node.inChat:
