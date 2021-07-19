@@ -19,15 +19,9 @@ class CommandHandler:
                 self.first_connection_with_parent()
                 time.sleep(1)
                 self.advertise_parent()
+
         elif cmd == "SHOW KNOWN CLIENTS":
-            result1 = self.client.node.known_IDs.copy()
-            for a in self.client.node.right_child_IDs_list:
-                if a not in result1:
-                    result1.append(a)
-            for a in self.client.node.left_child_IDs_list:
-                if a not in result1:
-                    result1.append(a)
-            return result1
+            print(self.known_ID())
 
         elif cmd.startswith("ROUTE"):
             ID_b = cmd.split()[1]
@@ -38,6 +32,18 @@ class CommandHandler:
             pckt.Data = f"ROUTE {ID_b} SOURCE {self.client.node.ID}"
             msg1 = pckt.make_massage()
             self.send_routing_message(msg1, True)
+
+        elif cmd.startswith("Advertise"):
+            ID_a = cmd.split()[1]
+            pckt = Packet()
+            pckt.type = 21
+            pckt.source_ID = self.client.node.ID
+            pckt.destination_ID = ID_a
+            pckt.Data = f"{ID_a}"
+            msg1 = pckt.make_massage()
+            if ID_a in self.known_ID():
+                self.send_message_known_id(ID_a, msg1)
+
         # start chat part
         elif cmd.startswith("START CHAT"):
             x = cmd.split(" ")
@@ -186,6 +192,16 @@ class CommandHandler:
         else:
             result = False
         return result
+
+    def known_ID(self):
+        result1 = self.client.node.known_IDs.copy()
+        for a in self.client.node.right_child_IDs_list:
+            if a not in result1:
+                result1.append(a)
+        for a in self.client.node.left_child_IDs_list:
+            if a not in result1:
+                result1.append(a)
+        return result1
 
     def advertise_parent(self):
         pckt = Packet()
