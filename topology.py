@@ -61,6 +61,3 @@ class Topology:
                 message = e
                 print(message)
 
-
-
-
