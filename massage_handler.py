@@ -83,8 +83,16 @@ class MassageHandler:
                 self.client.commandHandler.send_message_known_id(packet.destination_ID, packet)
             else:
                 if data == "Salam Salam Sad Ta Salam":
-                    pass
-                    # TODO : handle received salam
+                    packet2 = Packet()
+                    packet2.data = "Hezaro Sisad Ta Salam"
+                    packet2.source_ID = self.client.node.ID
+                    packet2.type = 0
+                    packet2.destination_ID = packet.source_ID
+                    self.client.commandHandler.send_message_known_id(packet2.destination_ID,packet2)
+                    self.client.node.known_IDs.append(packet.source_ID)
+                if data == "Hezaro Sisad Ta Salam":
+                    self.client.node.known_IDs.append(packet.source_ID)
+                    print("Hezaro Sisad Ta Salam")
                 if data.startswith("REQUESTS FOR STARTING CHAT WITH"):
                     self.client.node.inChat = True
                     temp = data.split(" ")
