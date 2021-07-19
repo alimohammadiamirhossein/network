@@ -44,12 +44,16 @@ class MassageHandler:
                 self.client.node.right_child_port = int(packet.Data)
                 # self.client.node.right_child_IDs_list.append(self.client.node.right_child_ID)
 
-        # elif packet.type == 21:
+        elif packet.type == 21:
             # print(21, packet.make_massage())
-            # if self.client.node.ID == packet.destination_ID:
-            #     if self
-            # else:
-            #     self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())
+            if packet.destination_ID == "-1":
+                self.client.node.known_IDs.append(packet.source_ID)
+                self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())
+            else:
+                if self.client.node.ID == packet.destination_ID :
+                    pass
+                else:
+                    self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())
 
         elif packet.type == 10:
             # sample :     ROUTE {ID_b} SOURCE {self.client.node.ID}
@@ -93,6 +97,7 @@ class MassageHandler:
             else:
                 self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())
         elif packet.type == 0:
+
             data = packet.Data
             if packet.destination_ID == self.client.node.ID or packet.destination_ID == "-1":
                 if data.startswith("Salam Salam Sad Ta Salam"):
@@ -110,45 +115,48 @@ class MassageHandler:
                     # self.client.node.known_IDs.append(packet.source_ID)
                     print("Hezaro Sisad Ta Salam")
                 elif data.startswith("REQUESTS FOR STARTING CHAT WITH"):
-                    self.client.node.inChat = True
-                    temp = data.split(" ")
-                    self.client.node.admin_name = temp[5]
-                    x = temp[7]
-                    x = x.split(",")
-                    # handle known ID's here
-                    for ID in x:
-                        if ID not in self.client.node.known_IDs:
-                            self.client.node.known_IDs.append(ID)
-                    ###
-                    self.client.node.admin_ID = x[0]
-                    self.client.node.all_chat_IDs = x
-                    print(f"{self.client.node.admin_name} with id {self.client.node.admin_ID} has "
-                          f"asked you to join a chat. Would you like to join?[Y/N]")
-                    self.client.node.join_to_chat_answer = True
-                elif data.startswith("EXIT CHAT"):
-                    # because the message is sent to all ID's in first list
-                    if self.client.node.inChat:
+                    if not self.client.node.inChat:
+                        self.client.node.inChat = True
                         temp = data.split(" ")
-                        left_chat_id = temp[2]
-                        for x in self.client.node.chat_members:
-                            if x[0] == left_chat_id:
-                                left_chat_name = x[1]
-                                self.client.node.chat_members.remove(x)
-                                break
-                        print(f"{left_chat_name}({left_chat_id}) left the chat.")
-                else:
-                    temp = data.split(" ")
-                    if temp[1] == ":" and len(temp) == 3:
-                        member_chat_name = temp[2]
-                        member_id = temp[0]
+                        self.client.node.admin_name = temp[5]
+                        x = temp[7]
+                        x = x.split(",")
+                        # handle known ID's here
+                        for ID in x:
+                            if ID not in self.client.node.known_IDs:
+                                self.client.node.known_IDs.append(ID)
+                        ###
+                        self.client.node.admin_ID = x[0]
+                        self.client.node.all_chat_IDs = x
+                        print(f"{self.client.node.admin_name} with id {self.client.node.admin_ID} has "
+                              f"asked you to join a chat. Would you like to join?[Y/N]")
+                        self.client.node.join_to_chat_answer = True
+                elif data.startswith("EXIT CHAT"):
+                    if packet.source_ID in self.client.node.all_chat_IDs:
+                        # because the message is sent to all ID's in first list
                         if self.client.node.inChat:
-                            self.client.node.chat_members.append([member_id, member_chat_name])
-                        if self.client.node.join_to_chat_answer:
-                            pass
+                            temp = data.split(" ")
+                            left_chat_id = temp[2]
+                            for x in self.client.node.chat_members:
+                                if x[0] == left_chat_id:
+                                    left_chat_name = x[1]
+                                    self.client.node.chat_members.remove(x)
+                                    break
+                            print(f"{left_chat_name}({left_chat_id}) left the chat.")
+                else:
+                    if packet.source_ID in self.client.node.all_chat_IDs:
+                        temp = data.split(" ")
+                        if temp[1] == ":" and len(temp) == 3:
+                            member_chat_name = temp[2]
+                            member_id = temp[0]
+                            if self.client.node.inChat:
+                                self.client.node.chat_members.append([member_id, member_chat_name])
+                            if self.client.node.join_to_chat_answer:
+                                pass
+                            else:
+                                print(f"{member_chat_name}({member_id}) was joined to the chat.")
                         else:
-                            print(f"{member_chat_name}({member_id}) was joined to the chat.")
-                    else:
-                        print(data)
+                            print(data)
 
             else:
                 self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())

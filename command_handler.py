@@ -41,9 +41,11 @@ class CommandHandler:
             pckt.destination_ID = ID_a
             pckt.Data = f"{ID_a}"
             msg1 = pckt.make_massage()
-            print("yops")
-            if ID_a in self.known_ID():
+            if ID_a == "-1":
                 self.send_message_known_id(ID_a, msg1)
+            else:
+                if ID_a in self.known_ID():
+                    self.send_message_known_id(ID_a, msg1)
 
         # start chat part
         elif cmd.startswith("START CHAT"):
@@ -76,7 +78,7 @@ class CommandHandler:
         elif cmd.startswith("Salam Salam Sad Ta Salam"):
             x = cmd.split(" ")
             destination_id = x[5]
-            if destination_id in self.client.node.known_IDs:
+            if destination_id in self.client.node.known_IDs or destination_id == "-1":
                 packet = Packet()
                 packet.type = 0
                 packet.Data = "Salam Salam Sad Ta Salam"
@@ -121,8 +123,6 @@ class CommandHandler:
                     packet.destination_ID = ID
                     packet.source_ID = self.client.node.ID
                     message = packet.make_massage()
-
-                # TODO: handle send_message_known
                     self.client.commandHandler.send_message_known_id(ID, message )
                 self.client.node.inChat = False
                 self.client.node.chat_members = []
