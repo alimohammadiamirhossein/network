@@ -41,8 +41,8 @@ class CommandHandler:
             pckt.destination_ID = ID_a
             pckt.Data = f"{ID_a}"
             msg1 = pckt.make_massage()
-            # if ID_a in self.known_ID():
-            #     self.send_message_known_id()
+            if ID_a in self.known_ID():
+                self.send_message_known_id(ID_a, msg1)
 
         # start chat part
         elif cmd.startswith("START CHAT"):
