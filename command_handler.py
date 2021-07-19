@@ -41,13 +41,11 @@ class CommandHandler:
             temp = x[4]
             chat_ids = temp.split(",")
             remove_IDs = []
-            print(self.client.node.known_IDs)
             for ID in chat_ids:
                 if ID not in self.client.node.known_IDs:
                     remove_IDs.append(ID)
             for ID in remove_IDs:
                 chat_ids.remove(ID)
-            print(chat_ids)
             string = ''
             for ID in chat_ids:
                 string += f",{ID}"
@@ -56,7 +54,6 @@ class CommandHandler:
                 packet.type = 0
                 packet.source_ID = self.client.node.ID
                 packet.destination_ID = ID
-                # TODO : all IDs in chat_ID
                 packet.Data = f"REQUESTS FOR STARTING CHAT WITH {client_chat_name} : {self.client.node.ID}{string}"
                 message = packet.make_massage()
                 self.client.commandHandler.send_message_known_id(ID, message)
