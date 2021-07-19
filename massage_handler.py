@@ -19,11 +19,13 @@ class MassageHandler:
             if packet.source_ID == self.client.node.left_child_ID:
                 if packet.Data not in self.client.node.left_child_IDs_list:
                     self.client.node.left_child_IDs_list.append(packet.Data)
-                    # print("left_child", self.client.node.left_child_IDs_list)
+                    self.client.node.known_IDs.append(packet.Data)
+                # print("left_child", self.client.node.left_child_IDs_list)
             elif packet.source_ID == self.client.node.right_child_ID:
                 if packet.Data not in self.client.node.right_child_IDs_list:
                     self.client.node.right_child_IDs_list.append(packet.Data)
-                    # print("right_child", self.client.node.right_child_IDs_list)
+                    self.client.node.known_IDs.append(packet.Data)
+                # print("right_child", self.client.node.right_child_IDs_list)
             packet.source_ID = self.client.node.ID
             packet.destination_ID = self.client.node.parent_ID
             if packet.destination_ID != -1:
@@ -91,7 +93,10 @@ class MassageHandler:
                 self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())
         elif packet.type == 0:
             data = packet.Data
+            # print("packet data is :", data)
+            # print("destination ID" , packet.destination_ID)
             if packet.destination_ID == self.client.node.ID or packet.destination_ID == "-1":
+                # print("debug1")
                 if data.startswith("Salam Salam Sad Ta Salam"):
                     print("Salam Salam Sad Ta Salam")
                     packet2 = Packet()
@@ -117,6 +122,7 @@ class MassageHandler:
                             self.client.node.known_IDs.append(ID)
                     ###
                     self.client.node.admin_ID = x[0]
+                    # self.client.node.chat_members.append([x[0] , temp[5]])
                     self.client.node.all_chat_IDs = x
                     print(f"{self.client.node.admin_name} with id {self.client.node.admin_ID} has "
                           f"asked you to join a chat. Would you like to join?[Y/N]")
@@ -133,6 +139,7 @@ class MassageHandler:
                                 break
                         print(f"{left_chat_name}({left_chat_id}) left the chat.")
                 else:
+                    # print("debug2")
                     temp = data.split(" ")
                     if temp[1] == ":" and len(temp) == 3:
                         member_chat_name = temp[2]
@@ -144,6 +151,7 @@ class MassageHandler:
                         else:
                             print(f"{member_chat_name}({member_id}) was joined to the chat.")
                     else:
+                        print("inja darim print mikonim")
                         print(data)
 
             else:

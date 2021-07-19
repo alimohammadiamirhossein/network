@@ -52,6 +52,8 @@ class CommandHandler:
             self.client.node.inChat = True
             temp = x[4]
             chat_ids = temp.split(",")
+            self.client.node.all_chat_IDs = chat_ids
+            self.client.node.all_chat_IDs.append(self.client.node.ID)
             remove_IDs = []
             for ID in chat_ids:
                 if ID not in self.client.node.known_IDs:
@@ -73,17 +75,14 @@ class CommandHandler:
         elif cmd.startswith("Salam Salam Sad Ta Salam"):
             x = cmd.split(" ")
             destination_id = x[5]
-            if destination_id == -1:
-                # TODO : send message to all
-                pass
-            # if destination_id in self.client.node.known_IDs:
-            packet = Packet()
-            packet.type = 0
-            packet.Data = "Salam Salam Sad Ta Salam"
-            packet.destination_ID = destination_id
-            packet.source_ID = self.client.node.ID
-            message = packet.make_massage()
-            self.send_message_known_id(destination_id,message)
+            if destination_id in self.client.node.known_IDs:
+                packet = Packet()
+                packet.type = 0
+                packet.Data = "Salam Salam Sad Ta Salam"
+                packet.destination_ID = destination_id
+                packet.source_ID = self.client.node.ID
+                message = packet.make_massage()
+                self.send_message_known_id(destination_id,message)
 
     def chat_handler(self, cmd):
         if self.client.node.join_to_chat_answer:
@@ -131,16 +130,17 @@ class CommandHandler:
                 self.send_chat_message_to_all(cmd)
 
     def send_chat_message_to_all(self, msg):
+        print(self.client.node.chat_members, "chat members")
         for x in self.client.node.chat_members:
             ID = x[0]
             chat_name = x[1]
             packet = Packet()
             packet.type = 0
-            packet.Data = f"{chat_name} : {msg}"
+            packet.Data = f"{self.client.node.chat_name} : {msg}"
             packet.destination_ID = ID
             packet.source_ID = self.client.node.ID
             message = packet.make_massage()
-        self.client.commandHandler.send_message_known_id(ID,message )
+            self.client.commandHandler.send_message_known_id(ID,message)
 
     def send_routing_message(self, msg2, are_u_start=False):
         packet2 = Packet()
