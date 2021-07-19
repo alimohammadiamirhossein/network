@@ -84,6 +84,7 @@ class MassageHandler:
             else:
                 if data == "Salam Salam Sad Ta Salam":
                     pass
+                    # TODO : handle received salam
                 if data.startswith("REQUESTS FOR STARTING CHAT WITH"):
                     self.client.node.inChat = True
                     temp = data.split(" ")

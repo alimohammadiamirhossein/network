@@ -49,6 +49,16 @@ class CommandHandler:
                 self.client.commandHandler.send_message_known_id(ID,                                                                        # TODO : all IDs in chat_ID
                                                                  f"REQUESTS FOR STARTING CHAT WITH {client_chat_name} : {self.client.node.ID},ID1,ID2,ID3")
 
+        elif cmd.startswith("Salam Salam Sad Ta Salam"):
+            x = cmd.split(" ")
+            destination_id = x[5]
+            packet = Packet()
+            packet.type = 0
+            packet.Data = "Salam Salam Sad Ta Salam"
+            packet.destination_ID = destination_id
+            packet.source_ID = self.client.node.ID
+            message = packet.make_massage()
+            self.send_message_known_id(destination_id, packet)
 
 
     def chat_handler(self, cmd):
