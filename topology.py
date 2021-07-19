@@ -17,7 +17,7 @@ class Topology:
             self.last_node_number += 1
         self.IDs_and_Ports.append([ID, port])
         parent_index = (self.last_node_number // 2) - 1
-        print(parent_index)
+        # print(parent_index)
         parent_node = None
         if parent_index >= 0:
             parent_node = self.IDs_and_Ports[parent_index]
@@ -38,7 +38,7 @@ class Topology:
                 id1 = msg.split()[0]
                 port1 = int(msg.split()[8])
                 parent1 = self.append(id1, port1)
-                print(parent1, id1, port1, self.IDs_and_Ports)
+                # print(parent1, id1, port1, self.IDs_and_Ports)
                 if parent1:
                     send_data = f"CONNECT TO {parent1[0]} WITH PORT {parent1[1]}"
                 else:
@@ -50,14 +50,14 @@ class Topology:
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         while True:
             try:
-                print(port1)
+                # print(port1)
                 client_socket.connect((host, port1))
-                print(send_data)
+                # print(send_data)
                 client_socket.send(send_data.encode("ascii"))
                 client_socket.close()
                 break
             except Exception as e:
                 time.sleep(1)
                 message = e
-                print(message)
+                # print(message)
 

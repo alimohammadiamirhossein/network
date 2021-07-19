@@ -61,7 +61,7 @@ class Client:
             if self.node.parent_ID is None:
                 self.node.parent_ID = msg.split()[2]
                 self.node.parent_port = int(msg.split()[5])
-                print(self.node.parent_ID, self.node.parent_port)
+                # print(self.node.parent_ID, self.node.parent_port)
             else:
                 packet1 = Packet()
                 packet1.fetch_massage(msg)
@@ -94,17 +94,19 @@ CONNECT AS reza ON PORT 13
 CONNECT AS kia ON PORT 14
 CONNECT AS mamal ON PORT 5
 CONNECT AS tar ON PORT 6
-CONNECT AS arshia ON PORT 16 
-CONNECT AS shateri ON PORT 17
-CONNECT AS sani ON PORT 18
+CONNECT AS shayan ON PORT 16 
+CONNECT AS ahmad ON PORT 17
+CONNECT AS amir ON PORT 18
 
-
+SHOW KNOWN CLIENTS
 START CHAT dash : mohsen,kia
 
-FILTER INPUT kia ali 11 DROP
+FILTER INPUT ali sani 0 DROP
+
 FILTER INPUT reza ali 11 DROP
 FILTER OUTPUT sa reza 10 DROP
-FILTER OUTPUT sa * 10 DROP
+FILTER OUTPUT sa sani 0 DROP
 
+Advertise -1
 Salam Salam Sad Ta Salam -1
 '''

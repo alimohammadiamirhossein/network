@@ -8,18 +8,20 @@ class FireWall:
 
     @staticmethod
     def firewall_check(packet, fw):
-        # print(12, packet, fw, packet.type, fw.type, fw.direction, packet.source_ID,fw.source_ID, packet.destination_ID, fw.dest_ID, fw.is_acc)
+        print(12, packet, fw, packet.type, fw.type, fw.direction, packet.source_ID,fw.source_ID, packet.destination_ID, fw.dest_ID, fw.is_acc)
         if packet.type != fw.type:
             return True
         if fw.direction == "INPUT":
-            if packet.source_ID == "*":
+            if fw.source_ID == "*":
                 return fw.is_acc
             elif packet.source_ID == fw.source_ID:
                 return fw.is_acc
             else:
                 return True
         elif fw.direction == "OUTPUT":
-            if packet.destination_ID == "*":
+            if packet.destination_ID == "-1":
+                return fw.is_acc
+            elif fw.dest_ID == "*":
                 return fw.is_acc
             elif packet.destination_ID == fw.dest_ID:
                 return fw.is_acc

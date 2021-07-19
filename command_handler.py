@@ -16,12 +16,20 @@ class CommandHandler:
             while self.client.node.parent_port is None:
                 time.sleep(1)
             if self.client.node.parent_port != -1:
+                self.client.node.known_IDs.append(self.client.node.parent_ID)
                 self.first_connection_with_parent()
                 time.sleep(1)
                 self.advertise_parent()
 
         elif cmd == "SHOW KNOWN CLIENTS":
-            print(self.known_ID())
+            r = self.known_ID()
+            result1 = []
+            for x in r:
+                if x not in result1:
+                    result1.append(x)
+            for xx in result1:
+                print(xx, end=" ")
+            print()
 
         elif cmd.startswith("ROUTE"):
             ID_b = cmd.split()[1]
@@ -46,9 +54,23 @@ class CommandHandler:
             else:
                 if ID_a in self.known_ID():
                     self.send_message_known_id(ID_a, msg1)
-
+        elif cmd.startswith("FILTER"):
+            #sample FILTER Direction IDSource IDDestination Type Action
+            x = cmd.split()
+            type = int(x[4])
+            if x[5] == "DROP":
+                x[5] = False
+            else:
+                x[5] = True
+            self.client.firewall_manager.append_fireWall(x[1], x[2], x[3], type, x[5])
+        elif cmd.startswith("FW CHAT"):
+            if cmd.split()[2] == "DROP":
+                self.client.node.firewall_chat = False
         # start chat part
         elif cmd.startswith("START CHAT"):
+            if not self.client.node.firewall_chat:
+                print("Chat is disabled. Make sure the firewall allows you to chat.")
+                return
             x = cmd.split(" ")
             client_chat_name = x[2]
             self.client.node.chat_name = client_chat_name
@@ -91,7 +113,7 @@ class CommandHandler:
         if self.client.node.join_to_chat_answer:
             if cmd == "Y":
                 self.client.node.chat_members.append([self.client.node.admin_ID, self.client.node.admin_name])
-                print("Choose a name for yourself")
+                print("CHAT:\nChoose a name for yourself")
                 self.client.node.join_to_chat_answer = False
                 self.client.node.chat_name_answer = True
             else:
@@ -108,10 +130,7 @@ class CommandHandler:
                     packet.Data = f"{self.client.node.ID} : {name}"
                     packet.destination_ID = ID
                     packet.source_ID = self.client.node.ID
-                    # TODO: handle send_message_known
                     message = packet.make_massage()
-                    # print(self.client.node.all_chat_IDs)
-                    # print(message)
                     self.client.commandHandler.send_message_known_id(ID, message)
             self.client.node.chat_name_answer = False
         elif self.client.node.inChat:
@@ -131,7 +150,7 @@ class CommandHandler:
                 self.send_chat_message_to_all(cmd)
 
     def send_chat_message_to_all(self, msg):
-        print(self.client.node.chat_members, "chat members")
+        # print(self.client.node.chat_members, "chat members")
         for x in self.client.node.chat_members:
             ID = x[0]
             chat_name = x[1]
@@ -215,7 +234,7 @@ class CommandHandler:
             self.client.connection(msg1, self.client.node.parent_port)
 
     def first_connection_with_parent(self):
-        print("first connection")
+        # print("first connection")
         pckt = Packet()
         pckt.type = 41
         pckt.source_ID = self.client.node.ID

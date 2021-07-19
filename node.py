@@ -11,6 +11,7 @@ class Node:
         self.left_child_IDs_list = []
         self.right_child_IDs_list = []
         # chat part
+        self.firewall_chat = True
         self.known_IDs = []
         self.chat_name = None
         self.inChat = False
@@ -19,5 +20,5 @@ class Node:
         self.chat_name_answer = False
         self.admin_ID = None
         self.admin_name = None
-        self.all_chat_IDs = None
+        self.all_chat_IDs = []
         # chat part
