@@ -80,15 +80,16 @@ class MassageHandler:
         elif packet.type == 0:
             data = packet.Data
             if packet.destination_ID != self.client.node.ID:
-                self.client.commandHandler.send_message_known_id(packet.destination_ID, packet)
+                self.client.commandHandler.send_message_known_id(packet.destination_ID, packet.make_massage())
             else:
-                if data == "Salam Salam Sad Ta Salam":
+                if data.startswith("Salam Salam Sad Ta Salam"):
+                    print("Salam Salam Sad Ta Salam")
                     packet2 = Packet()
                     packet2.data = "Hezaro Sisad Ta Salam"
                     packet2.source_ID = self.client.node.ID
                     packet2.type = 0
                     packet2.destination_ID = packet.source_ID
-                    self.client.commandHandler.send_message_known_id(packet2.destination_ID,packet2)
+                    self.client.commandHandler.send_message_known_id(packet2.destination_ID,packet2.make_massage())
                     self.client.node.known_IDs.append(packet.source_ID)
                 if data == "Hezaro Sisad Ta Salam":
                     self.client.node.known_IDs.append(packet.source_ID)

@@ -90,7 +90,6 @@ if __name__ == '__main__':
 '''
 CONNECT AS ali ON PORT 1
 CONNECT AS mohsen ON PORT 2
-CONNECT AS reza ON PORT 3
 CONNECT AS kia ON PORT 4
 CONNECT AS mamal ON PORT 5
 CONNECT AS tar ON PORT 6

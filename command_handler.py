@@ -51,9 +51,11 @@ class CommandHandler:
                 # TODO : all IDs in chat_ID
                 packet.Data = f"REQUESTS FOR STARTING CHAT WITH {client_chat_name} : {self.client.node.ID},ID1,ID2,ID3"
                 # TODO : handle send_message_known id have to make packet
-                self.client.commandHandler.send_message_known_id(ID, packet)
+                message = packet.make_massage()
+                self.client.commandHandler.send_message_known_id(ID, message)
 
         elif cmd.startswith("Salam Salam Sad Ta Salam"):
+            print("alo")
             x = cmd.split(" ")
             destination_id = x[5]
             packet = Packet()
@@ -62,7 +64,7 @@ class CommandHandler:
             packet.destination_ID = destination_id
             packet.source_ID = self.client.node.ID
             message = packet.make_massage()
-            self.send_message_known_id(destination_id, packet)
+            self.send_message_known_id(destination_id,message)
 
     def chat_handler(self, cmd):
         if self.client.node.join_to_chat_answer:
@@ -86,7 +88,9 @@ class CommandHandler:
                     packet.destination_ID = ID
                     packet.source_ID = self.client.node.ID
                     # TODO: handle send_message_known
-                    self.client.commandHandler.send_message_known_id(ID, packet )
+                    message = packet.make_massage()
+
+                self.client.commandHandler.send_message_known_id(ID, message )
             self.client.node.chat_name_answer = False
         elif self.client.node.inChat:
             if cmd == "EXIT CHAT":
@@ -96,8 +100,10 @@ class CommandHandler:
                     packet.Data = f"EXIT CHAT {self.client.node.ID}"
                     packet.destination_ID = ID
                     packet.source_ID = self.client.node.ID
-                    # TODO: handle send_message_known
-                    self.client.commandHandler.send_message_known_id(ID, )
+                    message = packet.make_massage()
+
+                # TODO: handle send_message_known
+                    self.client.commandHandler.send_message_known_id(ID, message )
                 self.client.node.inChat = False
                 self.client.node.chat_members = []
                 self.client.node.all_chat_IDs = []
@@ -113,7 +119,8 @@ class CommandHandler:
             packet.Data = f"{chat_name} : {msg}"
             packet.destination_ID = ID
             packet.source_ID = self.client.node.ID
-            self.client.commandHandler.send_message_known_id(ID,packet )
+            message = packet.make_massage()
+        self.client.commandHandler.send_message_known_id(ID,message )
 
     def send_routing_message(self, msg2, are_u_start=False):
         packet2 = Packet()
