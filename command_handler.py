@@ -20,9 +20,14 @@ class CommandHandler:
                 time.sleep(1)
                 self.advertise_parent()
         elif cmd == "SHOW KNOWN CLIENTS":
-            lsd1 = self.client.node.left_child_IDs_list
-            lsd2 = self.client.node.right_child_IDs_list
-            print(lsd1 + lsd2)
+            result1 = self.client.node.known_IDs.copy()
+            for a in self.client.node.right_child_IDs_list:
+                if a not in result1:
+                    result1.append(a)
+            for a in self.client.node.left_child_IDs_list:
+                if a not in result1:
+                    result1.append(a)
+            print(result1)
         elif cmd.startswith("ROUTE"):
             ID_b = cmd.split()[1]
             pckt = Packet()
@@ -157,7 +162,7 @@ class CommandHandler:
         packet_tmp.fetch_massage(msg2)
         from_parent = 0
         if ID2 == "-1":
-            print(packet_tmp.source_ID, self.client.node.left_child_IDs_list, self.client.node.right_child_IDs_list)
+            # print(packet_tmp.source_ID, self.client.node.left_child_IDs_list, self.client.node.right_child_IDs_list)
             if packet_tmp.source_ID not in self.client.node.left_child_IDs_list:
                 from_parent += 1
             if packet_tmp.source_ID not in self.client.node.right_child_IDs_list:
@@ -195,7 +200,7 @@ class CommandHandler:
             self.client.connection(msg1, self.client.node.parent_port)
 
     def first_connection_with_parent(self):
-        print("first conn")
+        print("first connection")
         pckt = Packet()
         pckt.type = 41
         pckt.source_ID = self.client.node.ID
